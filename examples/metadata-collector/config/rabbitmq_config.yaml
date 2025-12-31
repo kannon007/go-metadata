@@ -1,0 +1,52 @@
+# RabbitMQ 消息队列配置样例
+id: "rabbitmq-production"
+type: "rabbitmq"
+category: "MessageQueue"
+endpoint: "localhost:15672"    # RabbitMQ Management API 端口
+
+# 认证信息
+credentials:
+  user: "guest"               # RabbitMQ 用户名
+  password: "guest"           # RabbitMQ 密码
+
+# 连接属性
+properties:
+  connection_timeout: 30      # 连接超时时间（秒）
+  extra:
+    api_version: "v1"         # API 版本
+
+# 匹配规则
+matching:
+  pattern_type: "glob"        # 模式类型: glob 或 regex
+  case_sensitive: false       # 是否大小写敏感
+  
+  # VHost 匹配规则（作为 Schema）
+  schemas:
+    include:
+      - "/"                   # 默认 vhost
+      - "production"          # 生产环境 vhost
+      - "staging"             # 测试环境 vhost
+    exclude:
+      - "temp_*"              # 排除临时 vhost
+  
+  # Queue 匹配规则（作为 Table）
+  tables:
+    include:
+      - "*"                   # 包含所有队列
+    exclude:
+      - "amq.*"               # 排除系统队列
+      - "temp.*"              # 排除临时队列
+      - "*.dlq"               # 排除死信队列（可选）
+
+# 采集选项
+collect:
+  partitions: false           # RabbitMQ 无分区概念
+  indexes: false              # RabbitMQ 无索引概念
+  comments: true              # 采集队列描述信息
+  statistics: true            # 采集队列统计信息
+
+# 统计信息配置
+statistics:
+  enabled: true               # 启用统计信息采集
+  level: "table"              # 统计级别（队列级别）
+  max_time_seconds: 60        # 最大采集时间（秒）

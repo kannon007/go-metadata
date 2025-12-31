@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package metadata.errors.v1;
+
+option go_package = "go-metadata/api/errors;errors";
+
+import "errors/errors.proto";
+
+// ErrorReason 业务错误码枚举
+enum ErrorReason {
+  // 设置缺省错误码
+  option (.errors.default_code) = 500;
+
+  // 未知错误
+  UNKNOWN = 0;
+
+  // 数据源相关错误 (1xx)
+  DATA_SOURCE_NOT_FOUND = 100 [(.errors.code) = 404];
+  DATA_SOURCE_ALREADY_EXISTS = 101 [(.errors.code) = 409];
+  DATA_SOURCE_HAS_ASSOCIATED_TASKS = 102 [(.errors.code) = 409];
+  DATA_SOURCE_DISABLED = 103 [(.errors.code) = 400];
+  DATA_SOURCE_CONNECTION_FAILED = 104 [(.errors.code) = 503];
+  DATA_SOURCE_INVALID_TYPE = 105 [(.errors.code) = 400];
+  DATA_SOURCE_INVALID_STATUS = 106 [(.errors.code) = 400];
+  DATA_SOURCE_INVALID_CONFIG = 107 [(.errors.code) = 400];
+
+  // 任务相关错误 (2xx)
+  TASK_NOT_FOUND = 200 [(.errors.code) = 404];
+  TASK_ALREADY_EXISTS = 201 [(.errors.code) = 409];
+  TASK_INVALID_TYPE = 202 [(.errors.code) = 400];
+  TASK_INVALID_STATUS = 203 [(.errors.code) = 400];
+  TASK_INVALID_SCHEDULE = 204 [(.errors.code) = 400];
+  TASK_CANNOT_START = 205 [(.errors.code) = 400];
+  TASK_CANNOT_STOP = 206 [(.errors.code) = 400];
+  TASK_CANNOT_PAUSE = 207 [(.errors.code) = 400];
+
+  // 执行相关错误 (3xx)
+  EXECUTION_NOT_FOUND = 300 [(.errors.code) = 404];
+  EXECUTION_ALREADY_RUNNING = 301 [(.errors.code) = 409];
+  RETRY_NOT_ALLOWED = 302 [(.errors.code) = 400];
+  MAX_RETRIES_EXCEEDED = 303 [(.errors.code) = 400];
+
+  // 模板相关错误 (4xx)
+  TEMPLATE_NOT_FOUND = 400 [(.errors.code) = 404];
+  TEMPLATE_ALREADY_EXISTS = 401 [(.errors.code) = 409];
+  SYSTEM_TEMPLATE_CANNOT_MODIFY = 402 [(.errors.code) = 403];
+  SYSTEM_TEMPLATE_CANNOT_DELETE = 403 [(.errors.code) = 403];
+
+  // 认证授权错误 (5xx)
+  UNAUTHORIZED = 500 [(.errors.code) = 401];
+  FORBIDDEN = 501 [(.errors.code) = 403];
+  TOKEN_EXPIRED = 502 [(.errors.code) = 401];
+  TOKEN_INVALID = 503 [(.errors.code) = 401];
+  RATE_LIMIT_EXCEEDED = 504 [(.errors.code) = 429];
+
+  // 验证错误 (6xx)
+  VALIDATION_FAILED = 600 [(.errors.code) = 400];
+  INVALID_PARAMETER = 601 [(.errors.code) = 400];
+  MISSING_REQUIRED_FIELD = 602 [(.errors.code) = 400];
+}

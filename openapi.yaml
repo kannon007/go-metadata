@@ -1,0 +1,1540 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: ""
+    version: 0.0.1
+paths:
+    /api/v1/datasources:
+        get:
+            tags:
+                - DataSourceService
+            description: 列出数据源
+            operationId: DataSourceService_ListDataSources
+            parameters:
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: type
+                  in: query
+                  schema:
+                    type: integer
+                    format: enum
+                - name: status
+                  in: query
+                  schema:
+                    type: integer
+                    format: enum
+                - name: name
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.ListDataSourcesResponse'
+        post:
+            tags:
+                - DataSourceService
+            description: 创建数据源
+            operationId: DataSourceService_CreateDataSource
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.metadata.v1.CreateDataSourceRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.DataSource'
+    /api/v1/datasources/batch/status:
+        post:
+            tags:
+                - DataSourceService
+            description: 批量更新状态
+            operationId: DataSourceService_BatchUpdateStatus
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.metadata.v1.BatchUpdateStatusRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.BatchOperationResult'
+    /api/v1/datasources/export:
+        post:
+            tags:
+                - DataSourceService
+            description: 批量导出
+            operationId: DataSourceService_BatchExportDataSources
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.metadata.v1.BatchExportRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.BatchExportResponse'
+    /api/v1/datasources/import:
+        post:
+            tags:
+                - DataSourceService
+            description: 批量导入
+            operationId: DataSourceService_BatchImportDataSources
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.metadata.v1.BatchImportRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.BatchImportResult'
+    /api/v1/datasources/stats:
+        get:
+            tags:
+                - DataSourceService
+            description: 获取数据源统计
+            operationId: DataSourceService_GetDataSourceStats
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.DataSourceStats'
+    /api/v1/datasources/test:
+        post:
+            tags:
+                - DataSourceService
+            description: 使用配置测试连接
+            operationId: DataSourceService_TestConnectionWithConfig
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.metadata.v1.TestConnectionWithConfigRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.ConnectionTestResult'
+    /api/v1/datasources/{datasourceId}/save-as-template:
+        post:
+            tags:
+                - TemplateService
+            description: 保存为模板
+            operationId: TemplateService_SaveAsTemplate
+            parameters:
+                - name: datasourceId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.metadata.v1.SaveAsTemplateRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.DataSourceTemplate'
+    /api/v1/datasources/{id}:
+        get:
+            tags:
+                - DataSourceService
+            description: 获取数据源
+            operationId: DataSourceService_GetDataSource
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.DataSource'
+        put:
+            tags:
+                - DataSourceService
+            description: 更新数据源
+            operationId: DataSourceService_UpdateDataSource
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.metadata.v1.UpdateDataSourceRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.DataSource'
+        delete:
+            tags:
+                - DataSourceService
+            description: 删除数据源
+            operationId: DataSourceService_DeleteDataSource
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/datasources/{id}/can-delete:
+        get:
+            tags:
+                - DataSourceService
+            description: 检查是否可以删除
+            operationId: DataSourceService_CanDeleteDataSource
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.CanDeleteResult'
+    /api/v1/datasources/{id}/refresh:
+        post:
+            tags:
+                - DataSourceService
+            description: 刷新连接状态
+            operationId: DataSourceService_RefreshConnectionStatus
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/datasources/{id}/status:
+        put:
+            tags:
+                - DataSourceService
+            description: 更新数据源状态
+            operationId: DataSourceService_UpdateDataSourceStatus
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.metadata.v1.UpdateDataSourceStatusRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/datasources/{id}/test:
+        post:
+            tags:
+                - DataSourceService
+            description: 测试连接
+            operationId: DataSourceService_TestConnection
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.ConnectionTestResult'
+    /api/v1/executions/{id}:
+        get:
+            tags:
+                - TaskService
+            description: 获取执行记录
+            operationId: TaskService_GetTaskExecution
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.TaskExecution'
+    /api/v1/executions/{id}/cancel:
+        post:
+            tags:
+                - TaskService
+            description: 取消执行
+            operationId: TaskService_CancelExecution
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.TaskExecution'
+    /api/v1/executions/{id}/retry:
+        post:
+            tags:
+                - TaskService
+            description: 重试执行
+            operationId: TaskService_RetryExecution
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.TaskExecution'
+    /api/v1/tasks:
+        get:
+            tags:
+                - TaskService
+            description: 列出任务
+            operationId: TaskService_ListTasks
+            parameters:
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: datasourceId
+                  in: query
+                  schema:
+                    type: string
+                - name: status
+                  in: query
+                  schema:
+                    type: integer
+                    format: enum
+                - name: type
+                  in: query
+                  schema:
+                    type: integer
+                    format: enum
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.ListTasksResponse'
+        post:
+            tags:
+                - TaskService
+            description: 创建任务
+            operationId: TaskService_CreateTask
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.metadata.v1.CreateTaskRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.CollectionTask'
+    /api/v1/tasks/batch/delete:
+        post:
+            tags:
+                - TaskService
+            description: 批量删除任务
+            operationId: TaskService_BatchDeleteTasks
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.metadata.v1.BatchTaskOperationRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.BatchTaskOperationResult'
+    /api/v1/tasks/batch/start:
+        post:
+            tags:
+                - TaskService
+            description: 批量启动任务
+            operationId: TaskService_BatchStartTasks
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.metadata.v1.BatchTaskOperationRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.BatchTaskOperationResult'
+    /api/v1/tasks/batch/stop:
+        post:
+            tags:
+                - TaskService
+            description: 批量停止任务
+            operationId: TaskService_BatchStopTasks
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.metadata.v1.BatchTaskOperationRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.BatchTaskOperationResult'
+    /api/v1/tasks/{id}:
+        get:
+            tags:
+                - TaskService
+            description: 获取任务
+            operationId: TaskService_GetTask
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.CollectionTask'
+        put:
+            tags:
+                - TaskService
+            description: 更新任务
+            operationId: TaskService_UpdateTask
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.metadata.v1.UpdateTaskRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.CollectionTask'
+        delete:
+            tags:
+                - TaskService
+            description: 删除任务
+            operationId: TaskService_DeleteTask
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/tasks/{id}/execute:
+        post:
+            tags:
+                - TaskService
+            description: 立即执行任务
+            operationId: TaskService_ExecuteTaskNow
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.TaskExecution'
+    /api/v1/tasks/{id}/pause:
+        post:
+            tags:
+                - TaskService
+            description: 暂停任务
+            operationId: TaskService_PauseTask
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/tasks/{id}/resume:
+        post:
+            tags:
+                - TaskService
+            description: 恢复任务
+            operationId: TaskService_ResumeTask
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/tasks/{id}/start:
+        post:
+            tags:
+                - TaskService
+            description: 启动任务
+            operationId: TaskService_StartTask
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/tasks/{id}/status:
+        get:
+            tags:
+                - TaskService
+            description: 获取任务状态
+            operationId: TaskService_GetTaskStatus
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.TaskStatusInfo'
+    /api/v1/tasks/{id}/stop:
+        post:
+            tags:
+                - TaskService
+            description: 停止任务
+            operationId: TaskService_StopTask
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/tasks/{taskId}/executions:
+        get:
+            tags:
+                - TaskService
+            description: 列出执行记录
+            operationId: TaskService_ListTaskExecutions
+            parameters:
+                - name: taskId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: status
+                  in: query
+                  schema:
+                    type: integer
+                    format: enum
+                - name: startTime
+                  in: query
+                  schema:
+                    type: string
+                    format: date-time
+                - name: endTime
+                  in: query
+                  schema:
+                    type: string
+                    format: date-time
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.ListTaskExecutionsResponse'
+    /api/v1/templates:
+        get:
+            tags:
+                - TemplateService
+            description: 列出模板
+            operationId: TemplateService_ListTemplates
+            parameters:
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: int32
+                - name: type
+                  in: query
+                  schema:
+                    type: integer
+                    format: enum
+                - name: isSystem
+                  in: query
+                  schema:
+                    type: boolean
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.ListTemplatesResponse'
+        post:
+            tags:
+                - TemplateService
+            description: 创建模板
+            operationId: TemplateService_CreateTemplate
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.metadata.v1.CreateTemplateRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.DataSourceTemplate'
+    /api/v1/templates/export:
+        post:
+            tags:
+                - TemplateService
+            description: 导出模板
+            operationId: TemplateService_ExportTemplates
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.metadata.v1.ExportTemplatesRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.ExportTemplatesResponse'
+    /api/v1/templates/import:
+        post:
+            tags:
+                - TemplateService
+            description: 导入模板
+            operationId: TemplateService_ImportTemplates
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.metadata.v1.ImportTemplatesRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.ImportTemplatesResult'
+    /api/v1/templates/system:
+        get:
+            tags:
+                - TemplateService
+            description: 获取系统模板
+            operationId: TemplateService_GetSystemTemplates
+            parameters:
+                - name: type
+                  in: query
+                  schema:
+                    type: integer
+                    format: enum
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.GetSystemTemplatesResponse'
+    /api/v1/templates/{id}:
+        get:
+            tags:
+                - TemplateService
+            description: 获取模板
+            operationId: TemplateService_GetTemplate
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.DataSourceTemplate'
+        put:
+            tags:
+                - TemplateService
+            description: 更新模板
+            operationId: TemplateService_UpdateTemplate
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.metadata.v1.UpdateTemplateRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.DataSourceTemplate'
+        delete:
+            tags:
+                - TemplateService
+            description: 删除模板
+            operationId: TemplateService_DeleteTemplate
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /api/v1/templates/{templateId}/apply:
+        post:
+            tags:
+                - TemplateService
+            description: 应用模板
+            operationId: TemplateService_ApplyTemplate
+            parameters:
+                - name: templateId
+                  in: path
+                  required: true
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/api.metadata.v1.ApplyTemplateRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.metadata.v1.DataSource'
+components:
+    schemas:
+        api.metadata.v1.ApplyTemplateRequest:
+            type: object
+            properties:
+                templateId:
+                    type: string
+                name:
+                    type: string
+                description:
+                    type: string
+                config:
+                    $ref: '#/components/schemas/api.metadata.v1.ConnectionConfig'
+                tags:
+                    type: array
+                    items:
+                        type: string
+            description: 应用模板请求
+        api.metadata.v1.BatchExportRequest:
+            type: object
+            properties:
+                ids:
+                    type: array
+                    items:
+                        type: string
+                format:
+                    type: string
+            description: 批量导出请求
+        api.metadata.v1.BatchExportResponse:
+            type: object
+            properties:
+                format:
+                    type: string
+                data:
+                    type: string
+                count:
+                    type: integer
+                    format: int32
+            description: 批量导出响应
+        api.metadata.v1.BatchImportRequest:
+            type: object
+            properties:
+                format:
+                    type: string
+                data:
+                    type: string
+            description: 批量导入请求
+        api.metadata.v1.BatchImportResult:
+            type: object
+            properties:
+                total:
+                    type: integer
+                    format: int32
+                success:
+                    type: integer
+                    format: int32
+                failed:
+                    type: integer
+                    format: int32
+                dataSources:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.metadata.v1.DataSource'
+                errors:
+                    type: array
+                    items:
+                        type: string
+            description: 批量导入结果
+        api.metadata.v1.BatchOperationResult:
+            type: object
+            properties:
+                total:
+                    type: integer
+                    format: int32
+                success:
+                    type: integer
+                    format: int32
+                failed:
+                    type: integer
+                    format: int32
+                errors:
+                    type: array
+                    items:
+                        type: string
+            description: 批量操作结果
+        api.metadata.v1.BatchTaskOperationRequest:
+            type: object
+            properties:
+                ids:
+                    type: array
+                    items:
+                        type: string
+            description: 批量任务操作请求
+        api.metadata.v1.BatchTaskOperationResult:
+            type: object
+            properties:
+                total:
+                    type: integer
+                    format: int32
+                success:
+                    type: integer
+                    format: int32
+                failed:
+                    type: integer
+                    format: int32
+                results:
+                    type: object
+                    additionalProperties:
+                        type: string
+            description: 批量任务操作结果
+        api.metadata.v1.BatchUpdateStatusRequest:
+            type: object
+            properties:
+                ids:
+                    type: array
+                    items:
+                        type: string
+                status:
+                    type: integer
+                    format: enum
+            description: 批量更新状态请求
+        api.metadata.v1.CanDeleteResult:
+            type: object
+            properties:
+                canDelete:
+                    type: boolean
+                reason:
+                    type: string
+                associatedTasks:
+                    type: integer
+                    format: int32
+            description: 检查是否可以删除结果
+        api.metadata.v1.CollectionTask:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                datasourceId:
+                    type: string
+                type:
+                    type: integer
+                    format: enum
+                config:
+                    $ref: '#/components/schemas/api.metadata.v1.TaskConfig'
+                schedule:
+                    $ref: '#/components/schemas/api.metadata.v1.ScheduleConfig'
+                status:
+                    type: integer
+                    format: enum
+                schedulerType:
+                    type: integer
+                    format: enum
+                externalId:
+                    type: string
+                createdBy:
+                    type: string
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
+                lastExecutedAt:
+                    type: string
+                    format: date-time
+                nextExecuteAt:
+                    type: string
+                    format: date-time
+            description: 采集任务
+        api.metadata.v1.ConnectionConfig:
+            type: object
+            properties:
+                host:
+                    type: string
+                port:
+                    type: integer
+                    format: int32
+                database:
+                    type: string
+                username:
+                    type: string
+                password:
+                    type: string
+                ssl:
+                    type: boolean
+                sslMode:
+                    type: string
+                timeout:
+                    type: integer
+                    format: int32
+                maxConns:
+                    type: integer
+                    format: int32
+                maxIdleConns:
+                    type: integer
+                    format: int32
+                charset:
+                    type: string
+                extra:
+                    type: object
+                    additionalProperties:
+                        type: string
+            description: 连接配置
+        api.metadata.v1.ConnectionTestResult:
+            type: object
+            properties:
+                success:
+                    type: boolean
+                message:
+                    type: string
+                latency:
+                    type: string
+                serverInfo:
+                    type: string
+                databaseInfo:
+                    type: string
+                version:
+                    type: string
+            description: 连接测试结果
+        api.metadata.v1.CreateDataSourceRequest:
+            type: object
+            properties:
+                name:
+                    type: string
+                type:
+                    type: integer
+                    format: enum
+                description:
+                    type: string
+                config:
+                    $ref: '#/components/schemas/api.metadata.v1.ConnectionConfig'
+                tags:
+                    type: array
+                    items:
+                        type: string
+            description: 创建数据源请求
+        api.metadata.v1.CreateTaskRequest:
+            type: object
+            properties:
+                name:
+                    type: string
+                datasourceId:
+                    type: string
+                type:
+                    type: integer
+                    format: enum
+                config:
+                    $ref: '#/components/schemas/api.metadata.v1.TaskConfig'
+                schedule:
+                    $ref: '#/components/schemas/api.metadata.v1.ScheduleConfig'
+                schedulerType:
+                    type: integer
+                    format: enum
+            description: 创建任务请求
+        api.metadata.v1.CreateTemplateRequest:
+            type: object
+            properties:
+                name:
+                    type: string
+                type:
+                    type: integer
+                    format: enum
+                description:
+                    type: string
+                configTemplate:
+                    $ref: '#/components/schemas/api.metadata.v1.ConnectionConfig'
+            description: 创建模板请求
+        api.metadata.v1.DataSource:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                type:
+                    type: integer
+                    format: enum
+                description:
+                    type: string
+                config:
+                    $ref: '#/components/schemas/api.metadata.v1.ConnectionConfig'
+                status:
+                    type: integer
+                    format: enum
+                tags:
+                    type: array
+                    items:
+                        type: string
+                createdBy:
+                    type: string
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
+                lastTestAt:
+                    type: string
+                    format: date-time
+            description: 数据源
+        api.metadata.v1.DataSourceStats:
+            type: object
+            properties:
+                totalCount:
+                    type: string
+                activeCount:
+                    type: string
+                inactiveCount:
+                    type: string
+                errorCount:
+                    type: string
+            description: 数据源统计
+        api.metadata.v1.DataSourceTemplate:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                type:
+                    type: integer
+                    format: enum
+                description:
+                    type: string
+                configTemplate:
+                    $ref: '#/components/schemas/api.metadata.v1.ConnectionConfig'
+                isSystem:
+                    type: boolean
+                createdBy:
+                    type: string
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
+            description: 数据源模板
+        api.metadata.v1.ExecutionResult:
+            type: object
+            properties:
+                tablesProcessed:
+                    type: integer
+                    format: int32
+                recordsProcessed:
+                    type: string
+                errorsCount:
+                    type: integer
+                    format: int32
+                warningsCount:
+                    type: integer
+                    format: int32
+                processingStats:
+                    type: object
+                    additionalProperties:
+                        type: string
+            description: 执行结果
+        api.metadata.v1.ExportTemplatesRequest:
+            type: object
+            properties:
+                ids:
+                    type: array
+                    items:
+                        type: string
+                format:
+                    type: string
+            description: 导出模板请求
+        api.metadata.v1.ExportTemplatesResponse:
+            type: object
+            properties:
+                format:
+                    type: string
+                data:
+                    type: string
+                count:
+                    type: integer
+                    format: int32
+            description: 导出模板响应
+        api.metadata.v1.GetSystemTemplatesResponse:
+            type: object
+            properties:
+                templates:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.metadata.v1.DataSourceTemplate'
+            description: 获取系统模板响应
+        api.metadata.v1.ImportTemplatesRequest:
+            type: object
+            properties:
+                format:
+                    type: string
+                data:
+                    type: string
+            description: 导入模板请求
+        api.metadata.v1.ImportTemplatesResult:
+            type: object
+            properties:
+                total:
+                    type: integer
+                    format: int32
+                success:
+                    type: integer
+                    format: int32
+                failed:
+                    type: integer
+                    format: int32
+                templates:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.metadata.v1.DataSourceTemplate'
+                errors:
+                    type: array
+                    items:
+                        type: string
+            description: 导入模板结果
+        api.metadata.v1.ListDataSourcesResponse:
+            type: object
+            properties:
+                dataSources:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.metadata.v1.DataSource'
+                total:
+                    type: string
+                page:
+                    type: integer
+                    format: int32
+                pageSize:
+                    type: integer
+                    format: int32
+            description: 列出数据源响应
+        api.metadata.v1.ListTaskExecutionsResponse:
+            type: object
+            properties:
+                executions:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.metadata.v1.TaskExecution'
+                total:
+                    type: string
+                page:
+                    type: integer
+                    format: int32
+                pageSize:
+                    type: integer
+                    format: int32
+            description: 列出执行记录响应
+        api.metadata.v1.ListTasksResponse:
+            type: object
+            properties:
+                tasks:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.metadata.v1.CollectionTask'
+                total:
+                    type: string
+                page:
+                    type: integer
+                    format: int32
+                pageSize:
+                    type: integer
+                    format: int32
+            description: 列出任务响应
+        api.metadata.v1.ListTemplatesResponse:
+            type: object
+            properties:
+                templates:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.metadata.v1.DataSourceTemplate'
+                total:
+                    type: string
+                page:
+                    type: integer
+                    format: int32
+                pageSize:
+                    type: integer
+                    format: int32
+            description: 列出模板响应
+        api.metadata.v1.SaveAsTemplateRequest:
+            type: object
+            properties:
+                datasourceId:
+                    type: string
+                name:
+                    type: string
+                description:
+                    type: string
+            description: 保存为模板请求
+        api.metadata.v1.ScheduleConfig:
+            type: object
+            properties:
+                type:
+                    type: integer
+                    format: enum
+                cronExpr:
+                    type: string
+                interval:
+                    type: integer
+                    format: int32
+                startTime:
+                    type: string
+                    format: date-time
+                endTime:
+                    type: string
+                    format: date-time
+                timezone:
+                    type: string
+            description: 调度配置
+        api.metadata.v1.TaskConfig:
+            type: object
+            properties:
+                includeSchemas:
+                    type: array
+                    items:
+                        type: string
+                excludeSchemas:
+                    type: array
+                    items:
+                        type: string
+                includeTables:
+                    type: array
+                    items:
+                        type: string
+                excludeTables:
+                    type: array
+                    items:
+                        type: string
+                batchSize:
+                    type: integer
+                    format: int32
+                timeout:
+                    type: integer
+                    format: int32
+                retryCount:
+                    type: integer
+                    format: int32
+                retryInterval:
+                    type: integer
+                    format: int32
+                incrementalColumn:
+                    type: string
+                incrementalValue:
+                    type: string
+                extra:
+                    type: object
+                    additionalProperties:
+                        type: string
+            description: 任务配置
+        api.metadata.v1.TaskExecution:
+            type: object
+            properties:
+                id:
+                    type: string
+                taskId:
+                    type: string
+                status:
+                    type: integer
+                    format: enum
+                startTime:
+                    type: string
+                    format: date-time
+                endTime:
+                    type: string
+                    format: date-time
+                duration:
+                    type: string
+                result:
+                    $ref: '#/components/schemas/api.metadata.v1.ExecutionResult'
+                errorMessage:
+                    type: string
+                logs:
+                    type: string
+                externalId:
+                    type: string
+                createdAt:
+                    type: string
+                    format: date-time
+            description: 任务执行记录
+        api.metadata.v1.TaskStatusInfo:
+            type: object
+            properties:
+                taskId:
+                    type: string
+                status:
+                    type: integer
+                    format: enum
+                lastExecution:
+                    $ref: '#/components/schemas/api.metadata.v1.TaskExecution'
+                nextExecuteAt:
+                    type: string
+                    format: date-time
+                allowedActions:
+                    type: array
+                    items:
+                        type: string
+            description: 任务状态信息
+        api.metadata.v1.TestConnectionWithConfigRequest:
+            type: object
+            properties:
+                type:
+                    type: integer
+                    format: enum
+                config:
+                    $ref: '#/components/schemas/api.metadata.v1.ConnectionConfig'
+            description: 使用配置测试连接请求
+        api.metadata.v1.UpdateDataSourceRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                description:
+                    type: string
+                config:
+                    $ref: '#/components/schemas/api.metadata.v1.ConnectionConfig'
+                tags:
+                    type: array
+                    items:
+                        type: string
+            description: 更新数据源请求
+        api.metadata.v1.UpdateDataSourceStatusRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                status:
+                    type: integer
+                    format: enum
+            description: 更新数据源状态请求
+        api.metadata.v1.UpdateTaskRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                config:
+                    $ref: '#/components/schemas/api.metadata.v1.TaskConfig'
+                schedule:
+                    $ref: '#/components/schemas/api.metadata.v1.ScheduleConfig'
+            description: 更新任务请求
+        api.metadata.v1.UpdateTemplateRequest:
+            type: object
+            properties:
+                id:
+                    type: string
+                name:
+                    type: string
+                description:
+                    type: string
+                configTemplate:
+                    $ref: '#/components/schemas/api.metadata.v1.ConnectionConfig'
+            description: 更新模板请求
+tags:
+    - name: DataSourceService
+      description: DataSourceService 数据源管理服务
+    - name: TaskService
+      description: TaskService 任务管理服务
+    - name: TemplateService
+      description: TemplateService 模板管理服务

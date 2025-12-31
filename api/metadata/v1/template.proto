@@ -1,0 +1,199 @@
+syntax = "proto3";
+
+package api.metadata.v1;
+
+option go_package = "go-metadata/api/metadata/v1;v1";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "validate/validate.proto";
+import "datasource.proto";
+
+// TemplateService 模板管理服务
+service TemplateService {
+  // 创建模板
+  rpc CreateTemplate(CreateTemplateRequest) returns (DataSourceTemplate) {
+    option (google.api.http) = {
+      post: "/api/v1/templates"
+      body: "*"
+    };
+  }
+
+  // 更新模板
+  rpc UpdateTemplate(UpdateTemplateRequest) returns (DataSourceTemplate) {
+    option (google.api.http) = {
+      put: "/api/v1/templates/{id}"
+      body: "*"
+    };
+  }
+
+  // 删除模板
+  rpc DeleteTemplate(DeleteTemplateRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/templates/{id}"
+    };
+  }
+
+  // 获取模板
+  rpc GetTemplate(GetTemplateRequest) returns (DataSourceTemplate) {
+    option (google.api.http) = {
+      get: "/api/v1/templates/{id}"
+    };
+  }
+
+  // 列出模板
+  rpc ListTemplates(ListTemplatesRequest) returns (ListTemplatesResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/templates"
+    };
+  }
+
+  // 获取系统模板
+  rpc GetSystemTemplates(GetSystemTemplatesRequest) returns (GetSystemTemplatesResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/templates/system"
+    };
+  }
+
+  // 应用模板
+  rpc ApplyTemplate(ApplyTemplateRequest) returns (DataSource) {
+    option (google.api.http) = {
+      post: "/api/v1/templates/{template_id}/apply"
+      body: "*"
+    };
+  }
+
+  // 导出模板
+  rpc ExportTemplates(ExportTemplatesRequest) returns (ExportTemplatesResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/templates/export"
+      body: "*"
+    };
+  }
+
+  // 导入模板
+  rpc ImportTemplates(ImportTemplatesRequest) returns (ImportTemplatesResult) {
+    option (google.api.http) = {
+      post: "/api/v1/templates/import"
+      body: "*"
+    };
+  }
+
+  // 保存为模板
+  rpc SaveAsTemplate(SaveAsTemplateRequest) returns (DataSourceTemplate) {
+    option (google.api.http) = {
+      post: "/api/v1/datasources/{datasource_id}/save-as-template"
+      body: "*"
+    };
+  }
+}
+
+// 数据源模板
+message DataSourceTemplate {
+  string id = 1;
+  string name = 2;
+  DataSourceType type = 3;
+  string description = 4;
+  ConnectionConfig config_template = 5;
+  bool is_system = 6;
+  string created_by = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
+}
+
+// 创建模板请求
+message CreateTemplateRequest {
+  string name = 1 [(validate.rules).string = {min_len: 1, max_len: 100}];
+  DataSourceType type = 2 [(validate.rules).enum = {defined_only: true, not_in: [0]}];
+  string description = 3 [(validate.rules).string = {max_len: 500}];
+  ConnectionConfig config_template = 4 [(validate.rules).message = {required: true}];
+}
+
+// 更新模板请求
+message UpdateTemplateRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+  string name = 2 [(validate.rules).string = {max_len: 100}];
+  string description = 3 [(validate.rules).string = {max_len: 500}];
+  ConnectionConfig config_template = 4;
+}
+
+// 删除模板请求
+message DeleteTemplateRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 获取模板请求
+message GetTemplateRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 列出模板请求
+message ListTemplatesRequest {
+  int32 page = 1 [(validate.rules).int32 = {gte: 0}];
+  int32 page_size = 2 [(validate.rules).int32 = {gte: 0, lte: 100}];
+  DataSourceType type = 3;
+  bool is_system = 4;
+}
+
+// 列出模板响应
+message ListTemplatesResponse {
+  repeated DataSourceTemplate templates = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+// 获取系统模板请求
+message GetSystemTemplatesRequest {
+  DataSourceType type = 1;
+}
+
+// 获取系统模板响应
+message GetSystemTemplatesResponse {
+  repeated DataSourceTemplate templates = 1;
+}
+
+// 应用模板请求
+message ApplyTemplateRequest {
+  string template_id = 1 [(validate.rules).string = {min_len: 1}];
+  string name = 2 [(validate.rules).string = {min_len: 1, max_len: 100}];
+  string description = 3 [(validate.rules).string = {max_len: 500}];
+  ConnectionConfig config = 4 [(validate.rules).message = {required: true}];
+  repeated string tags = 5;
+}
+
+// 导出模板请求
+message ExportTemplatesRequest {
+  repeated string ids = 1;
+  string format = 2 [(validate.rules).string = {in: ["json", "yaml"]}];
+}
+
+// 导出模板响应
+message ExportTemplatesResponse {
+  string format = 1;
+  string data = 2;
+  int32 count = 3;
+}
+
+// 导入模板请求
+message ImportTemplatesRequest {
+  string format = 1 [(validate.rules).string = {in: ["json", "yaml"]}];
+  string data = 2 [(validate.rules).string = {min_len: 1}];
+}
+
+// 导入模板结果
+message ImportTemplatesResult {
+  int32 total = 1;
+  int32 success = 2;
+  int32 failed = 3;
+  repeated DataSourceTemplate templates = 4;
+  repeated string errors = 5;
+}
+
+// 保存为模板请求
+message SaveAsTemplateRequest {
+  string datasource_id = 1 [(validate.rules).string = {min_len: 1}];
+  string name = 2 [(validate.rules).string = {min_len: 1, max_len: 100}];
+  string description = 3 [(validate.rules).string = {max_len: 500}];
+}

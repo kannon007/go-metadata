@@ -1,0 +1,401 @@
+[
+  {
+    "database": "ecommerce",
+    "table": "users",
+    "table_type": "TABLE",
+    "columns": [
+      {
+        "name": "id",
+        "data_type": "BIGINT",
+        "nullable": false,
+        "primary_key": true,
+        "comment": "用户唯一标识"
+      },
+      {
+        "name": "name",
+        "data_type": "VARCHAR(100)",
+        "nullable": false,
+        "comment": "用户姓名"
+      },
+      {
+        "name": "email",
+        "data_type": "VARCHAR(255)",
+        "nullable": false,
+        "comment": "用户邮箱"
+      },
+      {
+        "name": "phone",
+        "data_type": "VARCHAR(20)",
+        "nullable": true,
+        "comment": "用户手机号"
+      },
+      {
+        "name": "city",
+        "data_type": "VARCHAR(100)",
+        "nullable": true,
+        "comment": "用户所在城市"
+      },
+      {
+        "name": "country",
+        "data_type": "VARCHAR(100)",
+        "nullable": true,
+        "comment": "用户所在国家"
+      },
+      {
+        "name": "status",
+        "data_type": "VARCHAR(20)",
+        "nullable": false,
+        "default_value": "active",
+        "comment": "用户状态：active, inactive, suspended"
+      },
+      {
+        "name": "created_at",
+        "data_type": "TIMESTAMP",
+        "nullable": false,
+        "comment": "用户创建时间"
+      },
+      {
+        "name": "updated_at",
+        "data_type": "TIMESTAMP",
+        "nullable": true,
+        "comment": "用户更新时间"
+      },
+      {
+        "name": "last_login",
+        "data_type": "TIMESTAMP",
+        "nullable": true,
+        "comment": "最后登录时间"
+      }
+    ]
+  },
+  {
+    "database": "ecommerce",
+    "table": "orders",
+    "table_type": "TABLE",
+    "columns": [
+      {
+        "name": "id",
+        "data_type": "BIGINT",
+        "nullable": false,
+        "primary_key": true,
+        "comment": "订单唯一标识"
+      },
+      {
+        "name": "user_id",
+        "data_type": "BIGINT",
+        "nullable": false,
+        "comment": "用户ID，外键关联users.id"
+      },
+      {
+        "name": "order_number",
+        "data_type": "VARCHAR(50)",
+        "nullable": false,
+        "comment": "订单号"
+      },
+      {
+        "name": "amount",
+        "data_type": "DECIMAL(10,2)",
+        "nullable": false,
+        "comment": "订单金额"
+      },
+      {
+        "name": "currency",
+        "data_type": "VARCHAR(3)",
+        "nullable": false,
+        "default_value": "USD",
+        "comment": "货币类型"
+      },
+      {
+        "name": "status",
+        "data_type": "VARCHAR(50)",
+        "nullable": false,
+        "comment": "订单状态：pending, completed, cancelled, refunded"
+      },
+      {
+        "name": "order_date",
+        "data_type": "DATE",
+        "nullable": false,
+        "comment": "订单日期"
+      },
+      {
+        "name": "shipping_address",
+        "data_type": "TEXT",
+        "nullable": true,
+        "comment": "收货地址"
+      },
+      {
+        "name": "created_at",
+        "data_type": "TIMESTAMP",
+        "nullable": false,
+        "comment": "订单创建时间"
+      },
+      {
+        "name": "updated_at",
+        "data_type": "TIMESTAMP",
+        "nullable": true,
+        "comment": "订单更新时间"
+      }
+    ]
+  },
+  {
+    "database": "ecommerce",
+    "table": "products",
+    "table_type": "TABLE",
+    "columns": [
+      {
+        "name": "id",
+        "data_type": "BIGINT",
+        "nullable": false,
+        "primary_key": true,
+        "comment": "产品唯一标识"
+      },
+      {
+        "name": "name",
+        "data_type": "VARCHAR(200)",
+        "nullable": false,
+        "comment": "产品名称"
+      },
+      {
+        "name": "description",
+        "data_type": "TEXT",
+        "nullable": true,
+        "comment": "产品描述"
+      },
+      {
+        "name": "price",
+        "data_type": "DECIMAL(10,2)",
+        "nullable": false,
+        "comment": "产品价格"
+      },
+      {
+        "name": "cost",
+        "data_type": "DECIMAL(10,2)",
+        "nullable": true,
+        "comment": "产品成本"
+      },
+      {
+        "name": "category",
+        "data_type": "VARCHAR(100)",
+        "nullable": false,
+        "comment": "产品类别"
+      },
+      {
+        "name": "brand",
+        "data_type": "VARCHAR(100)",
+        "nullable": true,
+        "comment": "产品品牌"
+      },
+      {
+        "name": "sku",
+        "data_type": "VARCHAR(50)",
+        "nullable": false,
+        "comment": "产品SKU"
+      },
+      {
+        "name": "stock_quantity",
+        "data_type": "INT",
+        "nullable": false,
+        "default_value": "0",
+        "comment": "库存数量"
+      },
+      {
+        "name": "is_active",
+        "data_type": "BOOLEAN",
+        "nullable": false,
+        "default_value": "true",
+        "comment": "是否激活"
+      },
+      {
+        "name": "created_at",
+        "data_type": "TIMESTAMP",
+        "nullable": false,
+        "comment": "产品创建时间"
+      },
+      {
+        "name": "updated_at",
+        "data_type": "TIMESTAMP",
+        "nullable": true,
+        "comment": "产品更新时间"
+      }
+    ]
+  },
+  {
+    "database": "ecommerce",
+    "table": "order_items",
+    "table_type": "TABLE",
+    "columns": [
+      {
+        "name": "id",
+        "data_type": "BIGINT",
+        "nullable": false,
+        "primary_key": true,
+        "comment": "订单项唯一标识"
+      },
+      {
+        "name": "order_id",
+        "data_type": "BIGINT",
+        "nullable": false,
+        "comment": "订单ID，外键关联orders.id"
+      },
+      {
+        "name": "product_id",
+        "data_type": "BIGINT",
+        "nullable": false,
+        "comment": "产品ID，外键关联products.id"
+      },
+      {
+        "name": "quantity",
+        "data_type": "INT",
+        "nullable": false,
+        "comment": "购买数量"
+      },
+      {
+        "name": "unit_price",
+        "data_type": "DECIMAL(10,2)",
+        "nullable": false,
+        "comment": "单价"
+      },
+      {
+        "name": "total_price",
+        "data_type": "DECIMAL(10,2)",
+        "nullable": false,
+        "comment": "总价"
+      },
+      {
+        "name": "discount_amount",
+        "data_type": "DECIMAL(10,2)",
+        "nullable": true,
+        "default_value": "0.00",
+        "comment": "折扣金额"
+      }
+    ]
+  },
+  {
+    "database": "analytics",
+    "table": "user_summary",
+    "table_type": "TABLE",
+    "columns": [
+      {
+        "name": "user_id",
+        "data_type": "BIGINT",
+        "nullable": false,
+        "primary_key": true,
+        "comment": "用户ID"
+      },
+      {
+        "name": "total_orders",
+        "data_type": "INT",
+        "nullable": false,
+        "default_value": "0",
+        "comment": "总订单数"
+      },
+      {
+        "name": "total_amount",
+        "data_type": "DECIMAL(12,2)",
+        "nullable": false,
+        "default_value": "0.00",
+        "comment": "总消费金额"
+      },
+      {
+        "name": "avg_order_value",
+        "data_type": "DECIMAL(10,2)",
+        "nullable": true,
+        "comment": "平均订单价值"
+      },
+      {
+        "name": "first_order_date",
+        "data_type": "DATE",
+        "nullable": true,
+        "comment": "首次下单日期"
+      },
+      {
+        "name": "last_order_date",
+        "data_type": "DATE",
+        "nullable": true,
+        "comment": "最后下单日期"
+      },
+      {
+        "name": "customer_lifetime_days",
+        "data_type": "INT",
+        "nullable": true,
+        "comment": "客户生命周期天数"
+      },
+      {
+        "name": "customer_category",
+        "data_type": "VARCHAR(20)",
+        "nullable": true,
+        "comment": "客户类别：VIP, Premium, Regular, Basic"
+      },
+      {
+        "name": "last_updated",
+        "data_type": "TIMESTAMP",
+        "nullable": false,
+        "comment": "最后更新时间"
+      }
+    ]
+  },
+  {
+    "database": "analytics",
+    "table": "product_summary",
+    "table_type": "TABLE",
+    "columns": [
+      {
+        "name": "product_id",
+        "data_type": "BIGINT",
+        "nullable": false,
+        "primary_key": true,
+        "comment": "产品ID"
+      },
+      {
+        "name": "total_sold",
+        "data_type": "INT",
+        "nullable": false,
+        "default_value": "0",
+        "comment": "总销售数量"
+      },
+      {
+        "name": "total_revenue",
+        "data_type": "DECIMAL(12,2)",
+        "nullable": false,
+        "default_value": "0.00",
+        "comment": "总销售收入"
+      },
+      {
+        "name": "avg_selling_price",
+        "data_type": "DECIMAL(10,2)",
+        "nullable": true,
+        "comment": "平均售价"
+      },
+      {
+        "name": "profit_margin",
+        "data_type": "DECIMAL(5,2)",
+        "nullable": true,
+        "comment": "利润率百分比"
+      },
+      {
+        "name": "first_sale_date",
+        "data_type": "DATE",
+        "nullable": true,
+        "comment": "首次销售日期"
+      },
+      {
+        "name": "last_sale_date",
+        "data_type": "DATE",
+        "nullable": true,
+        "comment": "最后销售日期"
+      },
+      {
+        "name": "popularity_rank",
+        "data_type": "INT",
+        "nullable": true,
+        "comment": "受欢迎程度排名"
+      },
+      {
+        "name": "last_updated",
+        "data_type": "TIMESTAMP",
+        "nullable": false,
+        "comment": "最后更新时间"
+      }
+    ]
+  }
+]

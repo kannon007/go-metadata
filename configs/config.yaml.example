@@ -1,0 +1,119 @@
+# 元数据管理系统配置文件模板
+# Metadata Management System Configuration Template
+
+# 服务器配置 / Server Configuration
+server:
+  host: "0.0.0.0"
+  port: 8080
+  read_timeout: 15s
+  write_timeout: 15s
+  idle_timeout: 60s
+
+# 日志配置 / Logging Configuration
+logging:
+  level: "info"  # debug, info, warn, error
+  format: "json" # json, text
+  output: "stdout" # stdout, file
+  file_path: "/var/log/go-metadata/app.log"
+
+# 图数据库配置 / Graph Database Configuration
+graph:
+  type: "nebula"  # nebula, neo4j
+  host: "localhost"
+  port: 9669      # NebulaGraph: 9669, Neo4j: 7687
+  user: "root"
+  password: ""
+  space: "metadata"  # NebulaGraph space 或 Neo4j database
+
+# 元数据存储配置 / Metadata Storage Configuration
+storage:
+  type: "mysql"  # mysql, postgres
+  host: "localhost"
+  port: 3306
+  user: "root"
+  password: ""
+  database: "metadata"
+  max_open_conns: 25
+  max_idle_conns: 5
+  conn_max_lifetime: 5m
+
+# 数据源采集器配置 / Data Source Collector Configuration
+collectors:
+  # MySQL 数据源
+  - name: "mysql-prod"
+    type: "mysql"
+    host: "localhost"
+    port: 3306
+    user: "readonly"
+    password: ""
+    database: ""
+    options:
+      charset: "utf8mb4"
+      parseTime: "true"
+  
+  # PostgreSQL 数据源
+  - name: "postgres-prod"
+    type: "postgres"
+    host: "localhost"
+    port: 5432
+    user: "readonly"
+    password: ""
+    database: "postgres"
+    options:
+      sslmode: "disable"
+  
+  # Hive 数据源
+  - name: "hive-prod"
+    type: "hive"
+    host: "localhost"
+    port: 10000
+    user: "hive"
+    password: ""
+    database: "default"
+    options:
+      auth: "NONE"
+
+# 血缘解析配置 / Lineage Analysis Configuration
+lineage:
+  # 默认解析深度
+  default_depth: 3
+  # 最大解析深度
+  max_depth: 10
+  # 缓存配置
+  cache:
+    enabled: true
+    ttl: 1h
+    max_size: 1000
+
+# 定时任务配置 / Scheduled Tasks Configuration
+scheduler:
+  # 元数据同步任务
+  metadata_sync:
+    enabled: true
+    cron: "0 2 * * *"  # 每天凌晨2点执行
+  # 血缘关系更新任务
+  lineage_update:
+    enabled: true
+    cron: "0 3 * * *"  # 每天凌晨3点执行
+
+# API 配置 / API Configuration
+api:
+  # API 版本前缀
+  prefix: "/api/v1"
+  # 分页配置
+  pagination:
+    default_page_size: 20
+    max_page_size: 100
+  # 跨域配置
+  cors:
+    enabled: true
+    allowed_origins:
+      - "*"
+    allowed_methods:
+      - "GET"
+      - "POST"
+      - "PUT"
+      - "DELETE"
+    allowed_headers:
+      - "Content-Type"
+      - "Authorization"

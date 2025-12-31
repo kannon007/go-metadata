@@ -1,0 +1,72 @@
+# MySQL 数据源配置样例
+id: "mysql-production"
+type: "mysql"
+category: "RDBMS"
+endpoint: "localhost:3306"
+
+# 认证信息
+credentials:
+  user: "root"
+  password: "password"
+
+# 连接属性
+properties:
+  connection_timeout: 30        # 连接超时时间（秒）
+  max_open_conns: 10           # 最大连接数
+  max_idle_conns: 5            # 最大空闲连接数
+  conn_max_lifetime: 3600      # 连接最大生存时间（秒）
+  extra:
+    charset: "utf8mb4"         # 字符集
+    parseTime: "true"          # 解析时间类型
+    loc: "Local"               # 时区
+
+# 匹配规则
+matching:
+  pattern_type: "glob"         # 模式类型: glob 或 regex
+  case_sensitive: false        # 是否大小写敏感
+  
+  # 数据库匹配规则
+  databases:
+    include:                   # 包含的数据库
+      - "myapp_*"             # 匹配 myapp_ 开头的数据库
+      - "analytics"           # 精确匹配 analytics 数据库
+    exclude:                   # 排除的数据库
+      - "information_schema"   # 排除系统数据库
+      - "performance_schema"
+      - "mysql"
+      - "sys"
+      - "*_temp"              # 排除临时数据库
+  
+  # 表匹配规则
+  tables:
+    include:
+      - "*"                   # 包含所有表
+    exclude:
+      - "tmp_*"               # 排除临时表
+      - "*_backup"            # 排除备份表
+      - "test_*"              # 排除测试表
+
+# 采集选项
+collect:
+  partitions: true            # 采集分区信息
+  indexes: true               # 采集索引信息
+  comments: true              # 采集注释信息
+  statistics: true            # 采集统计信息
+
+# 统计信息配置
+statistics:
+  enabled: true               # 启用统计信息采集
+  level: "table"              # 统计级别: table, column, full
+  max_time_seconds: 300       # 最大采集时间（秒）
+  max_rows: 1000000          # 最大行数限制
+  
+  # 列统计选项
+  column_stats:
+    enabled: true             # 启用列统计
+    include_top_n: true       # 包含 Top N 值
+    top_n_count: 10          # Top N 数量
+    include_min_max: true     # 包含最小最大值
+    include_avg: true         # 包含平均值
+    columns:                  # 指定列（空表示所有列）
+      - "user_id"
+      - "created_at"

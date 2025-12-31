@@ -1,0 +1,113 @@
+syntax = "proto3";
+
+package api.metadata.v1;
+
+option go_package = "go-metadata/api/metadata/v1;v1";
+
+import "google/api/annotations.proto";
+
+// 用户认证服务
+service UserService {
+  // 登录
+  rpc Login(LoginRequest) returns (LoginResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/login"
+      body: "*"
+    };
+  }
+
+  // 登出
+  rpc Logout(LogoutRequest) returns (LogoutResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/logout"
+    };
+  }
+
+  // 获取当前用户
+  rpc GetCurrentUser(GetCurrentUserRequest) returns (GetCurrentUserResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/currentUser"
+    };
+  }
+
+  // 获取通知列表
+  rpc GetNotices(GetNoticesRequest) returns (GetNoticesResponse) {
+    option (google.api.http) = {
+      get: "/api/notices"
+    };
+  }
+}
+
+// 登录请求
+message LoginRequest {
+  string username = 1;
+  string password = 2;
+  string type = 3;  // account, mobile
+}
+
+// 登录响应
+message LoginResponse {
+  string status = 1;  // ok, error
+  string type = 2;
+  string current_authority = 3;
+  string token = 4;
+}
+
+// 登出请求
+message LogoutRequest {}
+
+// 登出响应
+message LogoutResponse {
+  bool success = 1;
+}
+
+// 获取当前用户请求
+message GetCurrentUserRequest {}
+
+// 获取当前用户响应
+message GetCurrentUserResponse {
+  CurrentUser data = 1;
+}
+
+// 当前用户信息
+message CurrentUser {
+  string name = 1;
+  string avatar = 2;
+  string userid = 3;
+  string email = 4;
+  string title = 5;
+  string group = 6;
+  string access = 7;
+  string address = 8;
+  string phone = 9;
+  repeated UserTag tags = 10;
+  string country = 11;
+  string province = 12;
+  string city = 13;
+}
+
+// 用户标签
+message UserTag {
+  string key = 1;
+  string label = 2;
+}
+
+// 获取通知请求
+message GetNoticesRequest {}
+
+// 获取通知响应
+message GetNoticesResponse {
+  repeated Notice data = 1;
+}
+
+// 通知
+message Notice {
+  string id = 1;
+  string title = 2;
+  string type = 3;  // notification, message, event
+  bool read = 4;
+  string avatar = 5;
+  string datetime = 6;
+  string status = 7;
+  string extra = 8;
+}

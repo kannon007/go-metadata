@@ -1,0 +1,387 @@
+syntax = "proto3";
+
+package api.metadata.v1;
+
+option go_package = "go-metadata/api/metadata/v1;v1";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "validate/validate.proto";
+
+// TaskService 任务管理服务
+service TaskService {
+  // 创建任务
+  rpc CreateTask(CreateTaskRequest) returns (CollectionTask) {
+    option (google.api.http) = {
+      post: "/api/v1/tasks"
+      body: "*"
+    };
+  }
+
+  // 更新任务
+  rpc UpdateTask(UpdateTaskRequest) returns (CollectionTask) {
+    option (google.api.http) = {
+      put: "/api/v1/tasks/{id}"
+      body: "*"
+    };
+  }
+
+  // 删除任务
+  rpc DeleteTask(DeleteTaskRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/tasks/{id}"
+    };
+  }
+
+  // 获取任务
+  rpc GetTask(GetTaskRequest) returns (CollectionTask) {
+    option (google.api.http) = {
+      get: "/api/v1/tasks/{id}"
+    };
+  }
+
+  // 列出任务
+  rpc ListTasks(ListTasksRequest) returns (ListTasksResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/tasks"
+    };
+  }
+
+  // 启动任务
+  rpc StartTask(StartTaskRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/tasks/{id}/start"
+    };
+  }
+
+  // 停止任务
+  rpc StopTask(StopTaskRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/tasks/{id}/stop"
+    };
+  }
+
+  // 暂停任务
+  rpc PauseTask(PauseTaskRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/tasks/{id}/pause"
+    };
+  }
+
+  // 恢复任务
+  rpc ResumeTask(ResumeTaskRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/tasks/{id}/resume"
+    };
+  }
+
+  // 立即执行任务
+  rpc ExecuteTaskNow(ExecuteTaskNowRequest) returns (TaskExecution) {
+    option (google.api.http) = {
+      post: "/api/v1/tasks/{id}/execute"
+    };
+  }
+
+  // 获取任务状态
+  rpc GetTaskStatus(GetTaskStatusRequest) returns (TaskStatusInfo) {
+    option (google.api.http) = {
+      get: "/api/v1/tasks/{id}/status"
+    };
+  }
+
+  // 获取执行记录
+  rpc GetTaskExecution(GetTaskExecutionRequest) returns (TaskExecution) {
+    option (google.api.http) = {
+      get: "/api/v1/executions/{id}"
+    };
+  }
+
+  // 列出执行记录
+  rpc ListTaskExecutions(ListTaskExecutionsRequest) returns (ListTaskExecutionsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/tasks/{task_id}/executions"
+    };
+  }
+
+  // 取消执行
+  rpc CancelExecution(CancelExecutionRequest) returns (TaskExecution) {
+    option (google.api.http) = {
+      post: "/api/v1/executions/{id}/cancel"
+    };
+  }
+
+  // 重试执行
+  rpc RetryExecution(RetryExecutionRequest) returns (TaskExecution) {
+    option (google.api.http) = {
+      post: "/api/v1/executions/{id}/retry"
+    };
+  }
+
+  // 批量启动任务
+  rpc BatchStartTasks(BatchTaskOperationRequest) returns (BatchTaskOperationResult) {
+    option (google.api.http) = {
+      post: "/api/v1/tasks/batch/start"
+      body: "*"
+    };
+  }
+
+  // 批量停止任务
+  rpc BatchStopTasks(BatchTaskOperationRequest) returns (BatchTaskOperationResult) {
+    option (google.api.http) = {
+      post: "/api/v1/tasks/batch/stop"
+      body: "*"
+    };
+  }
+
+  // 批量删除任务
+  rpc BatchDeleteTasks(BatchTaskOperationRequest) returns (BatchTaskOperationResult) {
+    option (google.api.http) = {
+      post: "/api/v1/tasks/batch/delete"
+      body: "*"
+    };
+  }
+}
+
+// 任务类型
+enum TaskType {
+  TASK_TYPE_UNSPECIFIED = 0;
+  TASK_TYPE_FULL_COLLECTION = 1;
+  TASK_TYPE_INCREMENTAL_COLLECTION = 2;
+  TASK_TYPE_SCHEMA_ONLY = 3;
+  TASK_TYPE_DATA_PROFILE = 4;
+}
+
+// 任务状态
+enum TaskStatus {
+  TASK_STATUS_UNSPECIFIED = 0;
+  TASK_STATUS_ACTIVE = 1;
+  TASK_STATUS_INACTIVE = 2;
+  TASK_STATUS_RUNNING = 3;
+  TASK_STATUS_COMPLETED = 4;
+  TASK_STATUS_FAILED = 5;
+  TASK_STATUS_PAUSED = 6;
+}
+
+// 调度器类型
+enum SchedulerType {
+  SCHEDULER_TYPE_UNSPECIFIED = 0;
+  SCHEDULER_TYPE_DOLPHINSCHEDULER = 1;
+  SCHEDULER_TYPE_BUILTIN = 2;
+}
+
+// 调度类型
+enum ScheduleType {
+  SCHEDULE_TYPE_UNSPECIFIED = 0;
+  SCHEDULE_TYPE_IMMEDIATE = 1;
+  SCHEDULE_TYPE_ONCE = 2;
+  SCHEDULE_TYPE_CRON = 3;
+  SCHEDULE_TYPE_INTERVAL = 4;
+}
+
+// 执行状态
+enum ExecutionStatus {
+  EXECUTION_STATUS_UNSPECIFIED = 0;
+  EXECUTION_STATUS_PENDING = 1;
+  EXECUTION_STATUS_RUNNING = 2;
+  EXECUTION_STATUS_COMPLETED = 3;
+  EXECUTION_STATUS_FAILED = 4;
+  EXECUTION_STATUS_CANCELLED = 5;
+}
+
+// 任务配置
+message TaskConfig {
+  repeated string include_schemas = 1;
+  repeated string exclude_schemas = 2;
+  repeated string include_tables = 3;
+  repeated string exclude_tables = 4;
+  int32 batch_size = 5 [(validate.rules).int32 = {gte: 0, lte: 10000}];
+  int32 timeout = 6 [(validate.rules).int32 = {gte: 0, lte: 86400}];
+  int32 retry_count = 7 [(validate.rules).int32 = {gte: 0, lte: 10}];
+  int32 retry_interval = 8 [(validate.rules).int32 = {gte: 0, lte: 3600}];
+  string incremental_column = 9;
+  string incremental_value = 10;
+  map<string, string> extra = 11;
+}
+
+// 调度配置
+message ScheduleConfig {
+  ScheduleType type = 1 [(validate.rules).enum = {defined_only: true}];
+  string cron_expr = 2 [(validate.rules).string = {max_len: 100}];
+  int32 interval = 3 [(validate.rules).int32 = {gte: 0}];
+  google.protobuf.Timestamp start_time = 4;
+  google.protobuf.Timestamp end_time = 5;
+  string timezone = 6 [(validate.rules).string = {max_len: 50}];
+}
+
+// 采集任务
+message CollectionTask {
+  string id = 1;
+  string name = 2;
+  string datasource_id = 3;
+  TaskType type = 4;
+  TaskConfig config = 5;
+  ScheduleConfig schedule = 6;
+  TaskStatus status = 7;
+  SchedulerType scheduler_type = 8;
+  string external_id = 9;
+  string created_by = 10;
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+  google.protobuf.Timestamp last_executed_at = 13;
+  google.protobuf.Timestamp next_execute_at = 14;
+}
+
+// 执行结果
+message ExecutionResult {
+  int32 tables_processed = 1;
+  int64 records_processed = 2;
+  int32 errors_count = 3;
+  int32 warnings_count = 4;
+  map<string, int64> processing_stats = 5;
+}
+
+// 任务执行记录
+message TaskExecution {
+  string id = 1;
+  string task_id = 2;
+  ExecutionStatus status = 3;
+  google.protobuf.Timestamp start_time = 4;
+  google.protobuf.Timestamp end_time = 5;
+  int64 duration = 6;
+  ExecutionResult result = 7;
+  string error_message = 8;
+  string logs = 9;
+  string external_id = 10;
+  google.protobuf.Timestamp created_at = 11;
+}
+
+// 任务状态信息
+message TaskStatusInfo {
+  string task_id = 1;
+  TaskStatus status = 2;
+  TaskExecution last_execution = 3;
+  google.protobuf.Timestamp next_execute_at = 4;
+  repeated string allowed_actions = 5;
+}
+
+// 创建任务请求
+message CreateTaskRequest {
+  string name = 1 [(validate.rules).string = {min_len: 1, max_len: 100}];
+  string datasource_id = 2 [(validate.rules).string = {min_len: 1}];
+  TaskType type = 3 [(validate.rules).enum = {defined_only: true, not_in: [0]}];
+  TaskConfig config = 4;
+  ScheduleConfig schedule = 5;
+  SchedulerType scheduler_type = 6;
+}
+
+// 更新任务请求
+message UpdateTaskRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+  string name = 2 [(validate.rules).string = {max_len: 100}];
+  TaskConfig config = 3;
+  ScheduleConfig schedule = 4;
+}
+
+// 删除任务请求
+message DeleteTaskRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 获取任务请求
+message GetTaskRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 列出任务请求
+message ListTasksRequest {
+  int32 page = 1 [(validate.rules).int32 = {gte: 0}];
+  int32 page_size = 2 [(validate.rules).int32 = {gte: 0, lte: 100}];
+  string datasource_id = 3;
+  TaskStatus status = 4;
+  TaskType type = 5;
+}
+
+// 列出任务响应
+message ListTasksResponse {
+  repeated CollectionTask tasks = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+// 启动任务请求
+message StartTaskRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 停止任务请求
+message StopTaskRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 暂停任务请求
+message PauseTaskRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 恢复任务请求
+message ResumeTaskRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 立即执行任务请求
+message ExecuteTaskNowRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 获取任务状态请求
+message GetTaskStatusRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 获取执行记录请求
+message GetTaskExecutionRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 列出执行记录请求
+message ListTaskExecutionsRequest {
+  int32 page = 1 [(validate.rules).int32 = {gte: 0}];
+  int32 page_size = 2 [(validate.rules).int32 = {gte: 0, lte: 100}];
+  string task_id = 3 [(validate.rules).string = {min_len: 1}];
+  ExecutionStatus status = 4;
+  google.protobuf.Timestamp start_time = 5;
+  google.protobuf.Timestamp end_time = 6;
+}
+
+// 列出执行记录响应
+message ListTaskExecutionsResponse {
+  repeated TaskExecution executions = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+// 取消执行请求
+message CancelExecutionRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 重试执行请求
+message RetryExecutionRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 批量任务操作请求
+message BatchTaskOperationRequest {
+  repeated string ids = 1 [(validate.rules).repeated = {min_items: 1, max_items: 100}];
+}
+
+// 批量任务操作结果
+message BatchTaskOperationResult {
+  int32 total = 1;
+  int32 success = 2;
+  int32 failed = 3;
+  map<string, string> results = 4;
+}

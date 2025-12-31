@@ -1,0 +1,55 @@
+# MinIO/S3 对象存储配置样例
+id: "minio-datalake"
+type: "minio"
+category: "ObjectStorage"
+endpoint: "localhost:9000"     # MinIO 服务地址
+
+# 认证信息
+credentials:
+  user: "minioadmin"          # Access Key
+  password: "minioadmin"      # Secret Key
+
+# 连接属性
+properties:
+  connection_timeout: 30      # 连接超时时间（秒）
+  extra:
+    region: "us-east-1"       # 区域设置
+    secure: false             # 是否使用 HTTPS
+
+# 匹配规则
+matching:
+  pattern_type: "glob"        # 模式类型: glob 或 regex
+  case_sensitive: false       # 是否大小写敏感
+  
+  # Bucket 匹配规则（作为 Schema）
+  schemas:
+    include:
+      - "data-*"              # 数据 bucket
+      - "logs"                # 日志 bucket
+      - "analytics-*"         # 分析 bucket
+    exclude:
+      - "temp-*"              # 排除临时 bucket
+      - "backup-*"            # 排除备份 bucket
+  
+  # 对象前缀匹配规则（作为 Table）
+  tables:
+    include:
+      - "*"                   # 包含所有前缀
+    exclude:
+      - ".*"                  # 排除隐藏文件
+      - "tmp/*"               # 排除临时文件
+      - "*/temp/*"            # 排除临时目录
+
+# Schema 推断配置
+infer:
+  enabled: true               # 启用 Schema 推断
+  sample_size: 100           # 采样文件数量
+  max_depth: 10              # 最大嵌套深度
+  type_merge: "most_common"  # 类型合并策略: union, most_common
+
+# 采集选项
+collect:
+  partitions: true           # 采集分区信息（子前缀）
+  indexes: false             # 对象存储无索引概念
+  comments: true             # 采集对象元数据
+  statistics: true           # 采集统计信息

@@ -1,0 +1,54 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+server.exe
+
+# Build output
+/build/
+/bin/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Go
+/vendor/
+go.work
+go.work.sum
+
+# Config (keep example)
+configs/config.yaml
+!configs/config.yaml.example
+
+# Logs
+*.log
+logs/
+
+# Test
+coverage.out
+coverage.html
+
+# Temp
+tmp/
+temp/
+
+# Node (web)
+web/node_modules/
+web/dist/
+web/.umi/
+web/.umi-production/
+
+# Environment
+.env
+.env.local
+.env.*.local

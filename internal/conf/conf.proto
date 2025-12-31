@@ -1,0 +1,112 @@
+syntax = "proto3";
+
+package kratos.api.conf;
+
+option go_package = "go-metadata/internal/conf;conf";
+
+import "google/protobuf/duration.proto";
+
+message Bootstrap {
+  Server server = 1;
+  Data data = 2;
+  Auth auth = 3;
+  Scheduler scheduler = 4;
+  ConnectionPool connection_pool = 5;
+  Metrics metrics = 6;
+}
+
+message Server {
+  HTTP http = 1;
+  GRPC grpc = 2;
+}
+
+message HTTP {
+  bool enabled = 1;
+  string network = 2;
+  string addr = 3;
+  google.protobuf.Duration timeout = 4;
+}
+
+message GRPC {
+  bool enabled = 1;
+  string network = 2;
+  string addr = 3;
+  google.protobuf.Duration timeout = 4;
+}
+
+message Data {
+  Database database = 1;
+  Redis redis = 2;
+  Cache cache = 3;
+}
+
+message Database {
+  string driver = 1;
+  string source = 2;
+  int32 max_idle_conns = 3;
+  int32 max_open_conns = 4;
+  google.protobuf.Duration conn_max_lifetime = 5;
+}
+
+message Redis {
+  string network = 1;
+  string addr = 2;
+  string password = 3;
+  int32 db = 4;
+  google.protobuf.Duration dial_timeout = 5;
+  google.protobuf.Duration read_timeout = 6;
+  google.protobuf.Duration write_timeout = 7;
+}
+
+message Cache {
+  string type = 1;              // memory, redis
+  string prefix = 2;            // key前缀
+  google.protobuf.Duration cleanup_interval = 3;  // 本地缓存清理间隔
+}
+
+message Auth {
+  string jwt_secret = 1;
+  google.protobuf.Duration jwt_expire = 2;
+  google.protobuf.Duration refresh_expire = 3;
+  string issuer = 4;
+  repeated string admin_users = 5;
+  repeated string skip_paths = 6;
+  RateLimit rate_limit = 7;
+  Encryption encryption = 8;
+}
+
+message RateLimit {
+  bool enabled = 1;
+  int32 requests_per_ip = 2;    // 每个IP每分钟请求数
+  int32 burst_size = 3;         // 突发请求数
+  google.protobuf.Duration window = 4;           // 时间窗口
+  google.protobuf.Duration cleanup_period = 5;   // 清理周期
+}
+
+message Encryption {
+  string key = 1;               // AES加密密钥（32字节）
+  string algorithm = 2;         // 加密算法：aes-256-gcm
+}
+
+message Scheduler {
+  string type = 1;              // builtin, dolphinscheduler
+  string endpoint = 2;
+  string username = 3;
+  string password = 4;
+  map<string, string> properties = 5;
+}
+
+message ConnectionPool {
+  int32 max_open_conns = 1;
+  int32 max_idle_conns = 2;
+  google.protobuf.Duration conn_max_lifetime = 3;
+  google.protobuf.Duration conn_max_idle_time = 4;
+  google.protobuf.Duration health_check_interval = 5;
+  google.protobuf.Duration cleanup_interval = 6;
+}
+
+message Metrics {
+  bool enabled = 1;
+  google.protobuf.Duration collection_interval = 2;
+  string path = 3;
+}

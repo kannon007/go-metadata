@@ -1,0 +1,315 @@
+syntax = "proto3";
+
+package api.metadata.v1;
+
+option go_package = "go-metadata/api/metadata/v1;v1";
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "validate/validate.proto";
+
+// DataSourceService 数据源管理服务
+service DataSourceService {
+  // 创建数据源
+  rpc CreateDataSource(CreateDataSourceRequest) returns (DataSource) {
+    option (google.api.http) = {
+      post: "/api/v1/datasources"
+      body: "*"
+    };
+  }
+
+  // 更新数据源
+  rpc UpdateDataSource(UpdateDataSourceRequest) returns (DataSource) {
+    option (google.api.http) = {
+      put: "/api/v1/datasources/{id}"
+      body: "*"
+    };
+  }
+
+  // 删除数据源
+  rpc DeleteDataSource(DeleteDataSourceRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/api/v1/datasources/{id}"
+    };
+  }
+
+  // 获取数据源
+  rpc GetDataSource(GetDataSourceRequest) returns (DataSource) {
+    option (google.api.http) = {
+      get: "/api/v1/datasources/{id}"
+    };
+  }
+
+  // 列出数据源
+  rpc ListDataSources(ListDataSourcesRequest) returns (ListDataSourcesResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/datasources"
+    };
+  }
+
+  // 测试连接
+  rpc TestConnection(TestConnectionRequest) returns (ConnectionTestResult) {
+    option (google.api.http) = {
+      post: "/api/v1/datasources/{id}/test"
+    };
+  }
+
+  // 使用配置测试连接
+  rpc TestConnectionWithConfig(TestConnectionWithConfigRequest) returns (ConnectionTestResult) {
+    option (google.api.http) = {
+      post: "/api/v1/datasources/test"
+      body: "*"
+    };
+  }
+
+  // 刷新连接状态
+  rpc RefreshConnectionStatus(RefreshConnectionStatusRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/api/v1/datasources/{id}/refresh"
+    };
+  }
+
+  // 更新数据源状态
+  rpc UpdateDataSourceStatus(UpdateDataSourceStatusRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/api/v1/datasources/{id}/status"
+      body: "*"
+    };
+  }
+
+  // 获取数据源统计
+  rpc GetDataSourceStats(google.protobuf.Empty) returns (DataSourceStats) {
+    option (google.api.http) = {
+      get: "/api/v1/datasources/stats"
+    };
+  }
+
+  // 检查是否可以删除
+  rpc CanDeleteDataSource(CanDeleteDataSourceRequest) returns (CanDeleteResult) {
+    option (google.api.http) = {
+      get: "/api/v1/datasources/{id}/can-delete"
+    };
+  }
+
+  // 批量更新状态
+  rpc BatchUpdateStatus(BatchUpdateStatusRequest) returns (BatchOperationResult) {
+    option (google.api.http) = {
+      post: "/api/v1/datasources/batch/status"
+      body: "*"
+    };
+  }
+
+  // 批量导入
+  rpc BatchImportDataSources(BatchImportRequest) returns (BatchImportResult) {
+    option (google.api.http) = {
+      post: "/api/v1/datasources/import"
+      body: "*"
+    };
+  }
+
+  // 批量导出
+  rpc BatchExportDataSources(BatchExportRequest) returns (BatchExportResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/datasources/export"
+      body: "*"
+    };
+  }
+}
+
+// 数据源类型
+enum DataSourceType {
+  DATA_SOURCE_TYPE_UNSPECIFIED = 0;
+  DATA_SOURCE_TYPE_MYSQL = 1;
+  DATA_SOURCE_TYPE_POSTGRESQL = 2;
+  DATA_SOURCE_TYPE_ORACLE = 3;
+  DATA_SOURCE_TYPE_SQLSERVER = 4;
+  DATA_SOURCE_TYPE_MONGODB = 5;
+  DATA_SOURCE_TYPE_REDIS = 6;
+  DATA_SOURCE_TYPE_KAFKA = 7;
+  DATA_SOURCE_TYPE_RABBITMQ = 8;
+  DATA_SOURCE_TYPE_MINIO = 9;
+  DATA_SOURCE_TYPE_CLICKHOUSE = 10;
+  DATA_SOURCE_TYPE_DORIS = 11;
+  DATA_SOURCE_TYPE_HIVE = 12;
+  DATA_SOURCE_TYPE_ELASTICSEARCH = 13;
+}
+
+// 数据源状态
+enum DataSourceStatus {
+  DATA_SOURCE_STATUS_UNSPECIFIED = 0;
+  DATA_SOURCE_STATUS_ACTIVE = 1;
+  DATA_SOURCE_STATUS_INACTIVE = 2;
+  DATA_SOURCE_STATUS_ERROR = 3;
+  DATA_SOURCE_STATUS_TESTING = 4;
+}
+
+// 连接配置
+message ConnectionConfig {
+  string host = 1 [(validate.rules).string = {min_len: 1, max_len: 255}];
+  int32 port = 2 [(validate.rules).int32 = {gte: 1, lte: 65535}];
+  string database = 3 [(validate.rules).string = {max_len: 255}];
+  string username = 4 [(validate.rules).string = {max_len: 255}];
+  string password = 5;
+  bool ssl = 6;
+  string ssl_mode = 7;
+  int32 timeout = 8 [(validate.rules).int32 = {gte: 0, lte: 300}];
+  int32 max_conns = 9 [(validate.rules).int32 = {gte: 0, lte: 1000}];
+  int32 max_idle_conns = 10 [(validate.rules).int32 = {gte: 0, lte: 100}];
+  string charset = 11;
+  map<string, string> extra = 12;
+}
+
+// 数据源
+message DataSource {
+  string id = 1;
+  string name = 2;
+  DataSourceType type = 3;
+  string description = 4;
+  ConnectionConfig config = 5;
+  DataSourceStatus status = 6;
+  repeated string tags = 7;
+  string created_by = 8;
+  google.protobuf.Timestamp created_at = 9;
+  google.protobuf.Timestamp updated_at = 10;
+  google.protobuf.Timestamp last_test_at = 11;
+}
+
+// 创建数据源请求
+message CreateDataSourceRequest {
+  string name = 1 [(validate.rules).string = {min_len: 1, max_len: 100}];
+  DataSourceType type = 2 [(validate.rules).enum = {defined_only: true, not_in: [0]}];
+  string description = 3 [(validate.rules).string = {max_len: 500}];
+  ConnectionConfig config = 4 [(validate.rules).message = {required: true}];
+  repeated string tags = 5;
+}
+
+// 更新数据源请求
+message UpdateDataSourceRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+  string name = 2 [(validate.rules).string = {max_len: 100}];
+  string description = 3 [(validate.rules).string = {max_len: 500}];
+  ConnectionConfig config = 4;
+  repeated string tags = 5;
+}
+
+// 删除数据源请求
+message DeleteDataSourceRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 获取数据源请求
+message GetDataSourceRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 列出数据源请求
+message ListDataSourcesRequest {
+  int32 page = 1 [(validate.rules).int32 = {gte: 0}];
+  int32 page_size = 2 [(validate.rules).int32 = {gte: 0, lte: 100}];
+  DataSourceType type = 3;
+  DataSourceStatus status = 4;
+  string name = 5;
+}
+
+// 列出数据源响应
+message ListDataSourcesResponse {
+  repeated DataSource data_sources = 1;
+  int64 total = 2;
+  int32 page = 3;
+  int32 page_size = 4;
+}
+
+// 测试连接请求
+message TestConnectionRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 使用配置测试连接请求
+message TestConnectionWithConfigRequest {
+  DataSourceType type = 1 [(validate.rules).enum = {defined_only: true, not_in: [0]}];
+  ConnectionConfig config = 2 [(validate.rules).message = {required: true}];
+}
+
+// 连接测试结果
+message ConnectionTestResult {
+  bool success = 1;
+  string message = 2;
+  int64 latency = 3;
+  string server_info = 4;
+  string database_info = 5;
+  string version = 6;
+}
+
+// 刷新连接状态请求
+message RefreshConnectionStatusRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 更新数据源状态请求
+message UpdateDataSourceStatusRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+  DataSourceStatus status = 2 [(validate.rules).enum = {defined_only: true, not_in: [0]}];
+}
+
+// 数据源统计
+message DataSourceStats {
+  int64 total_count = 1;
+  int64 active_count = 2;
+  int64 inactive_count = 3;
+  int64 error_count = 4;
+}
+
+// 检查是否可以删除请求
+message CanDeleteDataSourceRequest {
+  string id = 1 [(validate.rules).string = {min_len: 1}];
+}
+
+// 检查是否可以删除结果
+message CanDeleteResult {
+  bool can_delete = 1;
+  string reason = 2;
+  int32 associated_tasks = 3;
+}
+
+// 批量更新状态请求
+message BatchUpdateStatusRequest {
+  repeated string ids = 1 [(validate.rules).repeated = {min_items: 1, max_items: 100}];
+  DataSourceStatus status = 2 [(validate.rules).enum = {defined_only: true, not_in: [0]}];
+}
+
+// 批量操作结果
+message BatchOperationResult {
+  int32 total = 1;
+  int32 success = 2;
+  int32 failed = 3;
+  repeated string errors = 4;
+}
+
+// 批量导入请求
+message BatchImportRequest {
+  string format = 1 [(validate.rules).string = {in: ["json", "yaml", "csv"]}];
+  string data = 2 [(validate.rules).string = {min_len: 1}];
+}
+
+// 批量导入结果
+message BatchImportResult {
+  int32 total = 1;
+  int32 success = 2;
+  int32 failed = 3;
+  repeated DataSource data_sources = 4;
+  repeated string errors = 5;
+}
+
+// 批量导出请求
+message BatchExportRequest {
+  repeated string ids = 1;
+  string format = 2 [(validate.rules).string = {in: ["json", "yaml", "csv"]}];
+}
+
+// 批量导出响应
+message BatchExportResponse {
+  string format = 1;
+  string data = 2;
+  int32 count = 3;
+}
